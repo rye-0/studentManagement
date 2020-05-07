@@ -1,16 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <%- include head %>
-        <title>学生管理系统</title>
-        <script type="text/javascript" src="/javascripts/management.js"></script>
-    </head>
-    <body>
-    <p>管理页面！</p>
-    <div><%= userName %></div>
-    <div class = "logout">
-        退出登录
+<head>
+    <%- include head %>
+    <title>学生信息管理系统</title>
+    <script type="text/javascript" src="/javascripts/management.js"></script>
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header layui-bg-cyan">
+        <div class="layui-logo">客户端管理</div>
+        <!-- 头部区域（可配合layui已有的水平导航） -->
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item">
+                <li class="layui-nav-item"><i class="layui-icon layui-icon-username"></i></li>
+                <li class="layui-nav-item"><a href=""><%= userName %></a></li>
+            </li>
+            <li class="layui-nav-item"><i class="layui-icon layui-icon-logout"></i></li>
+            <li class="layui-nav-item logout"><a href="">退出</a></li>
+        </ul>
     </div>
-    </body>
 
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <ul class="layui-nav layui-nav-tree" lay-filter="test">
+                <li class="layui-nav-item layui-nav-itemed">
+                    <a href="javascript:;">显示学生信息</a>
+                    <dl class="layui-nav-child">
+                        <dd class = "basicInfo"><a href="javascript:;">基本信息</a></dd>
+                        <dd class = "scoreInfo"><a href="javascript:;">成绩</a></dd>
+                        <dd><a href="">自定义</a></dd>
+                    </dl>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="javascript:;">统计学生信息</a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="">按课程统计</a></dd>
+                        <dd><a href="">按学生统计</a></dd>
+                    </dl>
+                </li>
+                <li class="layui-nav-item"><a href="">查询学生信息</a></li>
+            </ul>
+
+        </div>
+    </div>
+
+    <div class="layui-body" style="margin:0 0">
+        <!-- 内容主体区域 -->
+        <table class="layui-table">
+            <colgroup>
+                <col width="150">
+                <col width="200">
+                <col>
+            </colgroup>
+            <thead>
+            <tr>
+                <th>序号</th>
+                <th>Sno</th>
+                <th>Sname</th>
+                <th>Sno</th>
+                <th>Sname</th>
+                <th>Sno</th>
+                <th>Sname</th>
+                <th>Sno</th>
+                <th>Sname</th>
+                <th>Sno</th>
+            </tr>
+            </thead>
+            <tbody class = "list">
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+    //注意：导航 依赖 element 模块，否则无法进行功能性操作
+    layui.use('element', function(){
+        var element = layui.element;
+    });
+</script>
+</body>
 </html>

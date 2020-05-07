@@ -4,18 +4,55 @@
         <%- include head %>
         <title>登录</title>
         <script type="text/javascript" src="/javascripts/login.js"></script>
+        <script type="text/javascript" src="/javascripts/jquerymd5.js"></script>
+        <script>
+            layui.use('form', function(){
+                var form = layui.form;
+            });
+        </script>
     </head>
     <body>
-        <p>登录页面！</p>
-        <div>
-            <form id = "login">
-                <input type="text" name="userName" value="" placeholder="请输入用户名">
-                <input type="text" name="password" value="" placeholder="请输密码">
-                <div class = "submit" > 登录</div>
+    <div class="layui-layout layui-layout-admin">
+        <div class="layui-header layui-bg-cyan">
+            <div style="text-align: center; line-height: 60px;">学生信息管理系统</div>
+            <!-- 头部区域（可配合layui已有的水平导航） -->
+
+        </div>
+    <div class="layui-row layui-col-space10">
+        <div class="layui-col-md4"></div>
+        <div class="layui-col-md4">
+            <form class="layui-form" id="login">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">登录类型</label>
+                    <div class="layui-input-block">
+                        <select name="type" lay-filter="aihao">
+                            <option value="customer">客户</option>
+                            <option value="admin">管理员</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">用户名</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="userName" placeholder="请输入同户名" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">密码</label>
+                    <div class="layui-input-block">
+                        <input type="password" name="password" placeholder="请输入密码" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <div class="layui-btn submit"  lay-filter="*">登录</div>
+                        <div class="layui-btn layui-btn-primary">注册</div>
+                    </div>
+                </div>
             </form>
         </div>
-    </body>
-    <script>
+        <div class="layui-col-md4"></div>
+    </div>
 
-    </script>
+    </body>
 </html>

@@ -18,4 +18,5 @@ router.get('/management', function(req, res, next){
     var userName = req.session.userName;
     res.render('management',{userName : userName})
 })
+
 module.exports = router;

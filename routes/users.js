@@ -9,9 +9,9 @@ router.get('/', function(req, res, next) {
 });
 
 
-//用户登录接口
+//客户登录接口
 router.post('/login', function (req, res, next){
-    var sql = 'SELECT * FROM users WHERE Uno = \''
+    var sql = 'SELECT * FROM customers WHERE Uno = \''
         + req.body.userName + '\'';
     db.query(sql, function(err, rows, fields){
         if (err) {
@@ -34,11 +34,26 @@ router.post('/login', function (req, res, next){
         console.log("faild login");
     });
 })
-//用户退出登录
+//用户退出登录接口
 router.get('/logout', function(req, res, next) {
     req.session.userName = null;
     res.send('/login');
     console.log("success login!");
+});
+
+//查询学生基础信息接口
+router.get('/getBasicInfo', function(req, res, next) {
+    var sql = 'SELECT * FROM students';
+    db.query(sql, function(err, rows, fields){
+        if (err) {
+            console.log(err);
+            return;
+        }
+        var data ={};
+        data.message = rows;
+        console.log(data);
+        res.json(data);
+    });
 });
 
 module.exports = router;
