@@ -23,7 +23,7 @@ $(document).ready(function () {
             statusCode:{
                 200: function(data){
                     alert("登录成功！",data.responseText);
-                    console.log(data.responseText);
+                    // console.log(data.responseText);
                     setTimeout(function(){
                         window.location.href = data.responseText
                     },1000);

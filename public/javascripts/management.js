@@ -1,18 +1,27 @@
-var basicInfoTemplate = function(index, Sno, Sname, Ssex, Sclass, Smath, Schinese, Senglish, Sphysics,Spolitics){
+var basicInfoTemplate = function(index, Sno, Sname, Ssex, Sclass){
     var template = `<tr class = "row">
                     <td>${index}</td>
                     <td>${Sno}</td>
                     <td>${Sname}</td>
                     <td>${Ssex}</td>
-                    <td>${Sclass}</td>
-                    <td>${Smath}</td>
-                    <td>${Schinese}</td>
-                    <td>${Senglish}</td>
-                    <td>${Sphysics}</td>
-                    <td>${Spolitics}</td>
+                    <td>${Sclass}</td>           
                 </tr>`;
     return template;
 }
+var gradeInfoTemplate = function(index, Sno, Sname, Smath, Schinese, Senglish, Sphysics,Spolitics){
+    var template = `<tr class = "row">
+                    <td>${index}</td>
+                    <td>${Sname}</td>
+                    <td>${Sno}</td>                    
+                    <td>${Smath}</td>
+                    <td>${Schinese}</td>
+                    <td>${Senglish}</td>
+                    <td>${Sphysics}</td>     
+                    <td>${Spolitics}</td>                
+                </tr>`;
+    return template;
+}
+
 $(document).ready(function () {
     $(".logout").click(function(){
         if(confirm("确定退出")){
@@ -33,7 +42,7 @@ $(document).ready(function () {
             })
         }
     })
-    $(".basicInfo").click(function(){
+    $(".basicInfo").click(function(){//获取学生基本信息
         $.ajax({
             url :  '/users/getBasicInfo',
             type: 'get',
@@ -41,11 +50,43 @@ $(document).ready(function () {
             async: false,
             statusCode:{
                 200: function(data){
-                    data.message.forEach(function(val,index){
-                        $(".list").append(basicInfoTemplate(index+1, val.Sno, val.Sname, val.Ssex, val.Sclass, val.Smath, val.Schinese, val.Senglish, val.Sphysics,val.Spolitics))
-
+                    // console.log(data);
+                    $(".listCols").empty();
+                    $(".listCols").append("<tr class='cols'><th>序号</th></tr>")
+                    data.cols.forEach(function(val,index){
+                        var colName = "<th>"+val.COLUMN_NAME+"</th>";
+                        $(".cols").append(colName);
+                    });
+                    $(".listRows").empty();
+                    data.rows.forEach(function(val,index){
+                        $(".listRows").append(basicInfoTemplate(index+1, val.Sno, val.Sname, val.Ssex, val.Sclass));
                     })
                 },
+
+            }
+        })
+    })
+    $(".gradeInfo").click(function(){//获取学生成绩
+        $.ajax({
+            url :  '/users/getGradeInfo',
+            type: 'get',
+            dataType: 'json',
+            async: false,
+            statusCode:{
+                200: function(data){
+                    // console.log(data);
+                    $(".listCols").empty();
+                    $(".listCols").append("<tr class='cols'><th>序号</th></tr>")
+                    data.cols.forEach(function(val,index){
+                        var colName = "<th>"+val.COLUMN_NAME+"</th>";
+                        $(".cols").append(colName);
+                    });
+                    $(".listRows").empty();
+                    data.rows.forEach(function(val,index){
+                        $(".listRows").append(gradeInfoTemplate(index+1, val.Sno, val.Sname, val.Smath, val.Schinese, val.Senglish, val.Sphysics,val.Spolitics));
+                    })
+                },
+
             }
         })
     })
