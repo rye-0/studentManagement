@@ -41,7 +41,7 @@ router.get('/logout', function(req, res, next) {
     console.log("success login!");
 });
 
-//查询学生基础信息接口
+//显示学生基础信息接口
 router.get('/getBasicInfo', function(req, res, next) {
     var selCols = 'select COLUMN_NAME from information_schema.COLUMNS where table_name = \'students\';';
     var selRows = 'SELECT * FROM students';
@@ -64,7 +64,7 @@ router.get('/getBasicInfo', function(req, res, next) {
     });
 });
 
-//查询学生成绩接口
+//显示学生成绩接口
 router.get('/getGradeInfo', function(req, res, next) {
     var selCols = 'select COLUMN_NAME from information_schema.COLUMNS where table_name = \'grade\';';
     var selRows = 'SELECT s.Sname,g.* ' +
@@ -82,6 +82,43 @@ router.get('/getGradeInfo', function(req, res, next) {
         db.query(selRows, function(err, rows, fields){
             if (err) {
                 console.log(err);
+                return;
+            }
+            data.rows = rows;
+            console.log(data);
+            res.json(data);
+        });
+    });
+});
+//模糊查询信息接口
+router.post('/searchInfo', function(req, res, next) {
+    var selCols = 'select COLUMN_NAME from information_schema.COLUMNS where table_name = \'grade\';';
+    var searchInfo = "SELECT s.Sname,g.* " +
+        " FROM test.students s,test.grade g" +
+        " WHERE  s.Sno = g.Sno and s.Sno =(" +
+        " select Sno" +
+        " FROM test.students" +
+        " WHERE Sname = '" + req.body.key +
+        "');";
+    var data = {};
+    db.query(selCols, function(err, rows, fields){
+        if (err) {
+            console.log(err);
+            return;
+        }
+        rows.unshift({COLUMN_NAME: "Sname"});
+        data.cols = rows;
+        db.query(searchInfo, function(err, rows, fields){
+            if (err) {
+                console.log(err);
+                return;
+            }
+            if(!rows.length){
+                res.writeHead(300,{
+                    "content-type":"text/plain"
+                });
+                res.end();
+                console.log("查不到！");
                 return;
             }
             data.rows = rows;

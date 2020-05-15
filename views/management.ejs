@@ -39,7 +39,12 @@
                         <dd><a href="">按学生统计</a></dd>
                     </dl>
                 </li>
-                <li class="layui-nav-item"><a href="">查询学生信息</a></li>
+                <li class="layui-nav-item ">
+                    <a href="javascript:;">查询学生信息</a>
+                    <dl class="layui-nav-child">
+                        <dd class = "searchInfo"><a href="javascript:;">基本信息</a></dd>
+                    </dl>
+                </li>
             </ul>
 
         </div>
@@ -58,6 +63,26 @@
             <tbody class = "listRows">
             </tbody>
         </table>
+        <!--查询-->
+        <div class="layui-row layui-col-space10 search" >
+            <div class="layui-col-md4"></div>
+            <div class="layui-col-md4">
+                <form class="layui-form" id="search">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">姓名</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="Sname" placeholder="请输入要查找的姓名" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <div class="layui-btn submit"  lay-filter="*">查找</div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="layui-col-md4"></div>
+        </div>
     </div>
 </div>
 <script>

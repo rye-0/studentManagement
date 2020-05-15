@@ -23,7 +23,8 @@ var gradeInfoTemplate = function(index, Sno, Sname, Smath, Schinese, Senglish, S
 }
 
 $(document).ready(function () {
-    $(".logout").click(function(){
+
+    $(".logout").click(function(){//退出登录
         if(confirm("确定退出")){
             $.ajax({
                 url :  '/users/logout',
@@ -90,4 +91,38 @@ $(document).ready(function () {
             }
         })
     })
+    $(".search").hide();
+    $(".searchInfo").click(function(){
+        $(".listCols").empty();
+        $(".listRows").empty();
+        $(".search").show();
+        $(".submit").click(function(){
+            $.ajax({
+                url :  '/users/searchInfo',
+                type: 'post',
+                dataType: 'json',
+                async: false,
+                data: {key:$("#search input").val()},
+                statusCode:{
+                    200: function(data){
+                        // console.log(data);
+                        $(".listCols").append("<tr class='cols'><th>序号</th></tr>")
+                        data.cols.forEach(function(val,index){
+                            var colName = "<th>"+val.COLUMN_NAME+"</th>";
+                            $(".cols").append(colName);
+                        });
+                        data.rows.forEach(function(val,index){
+                            $(".listRows").append(gradeInfoTemplate(index+1, val.Sno, val.Sname, val.Smath, val.Schinese, val.Senglish, val.Sphysics,val.Spolitics));
+                        })
+                        $(".search").hide();
+                    },
+                    300: function(){
+                        alert("查不到！");
+                    }
+
+                }
+            })
+        })
+    })
+
 })
