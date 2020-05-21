@@ -44,6 +44,11 @@ $(document).ready(function () {
         }
     })
     $(".basicInfo").click(function(){//获取学生基本信息
+        $("#graph").empty();
+        $("#barGraph").empty();
+        $(".statistical").hide();
+        $(".listCols").empty();
+        $(".listRows").empty();
         $.ajax({
             url :  '/users/getBasicInfo',
             type: 'get',
@@ -68,6 +73,11 @@ $(document).ready(function () {
         })
     })
     $(".gradeInfo").click(function(){//获取学生成绩
+        $("#graph").empty();
+        $("#barGraph").empty();
+        $(".statistical").hide();
+        $(".listCols").empty();
+        $(".listRows").empty();
         $.ajax({
             url :  '/users/getGradeInfo',
             type: 'get',
@@ -92,11 +102,14 @@ $(document).ready(function () {
         })
     })
     $(".search").hide();
-    $(".searchInfo").click(function(){
+    $(".searchInfo").click(function(){//模糊查找
+        $("#graph").empty();
+        $("#barGraph").empty();
+        $(".statistical").hide();
         $(".listCols").empty();
         $(".listRows").empty();
         $(".search").show();
-        $(".submit").click(function(){
+        $(".searchSubmit").click(function(){
             $.ajax({
                 url :  '/users/searchInfo',
                 type: 'post',
@@ -124,5 +137,115 @@ $(document).ready(function () {
             })
         })
     })
+    $(".statistical").hide();
+    $(".statisticalScore").click(function(){//成绩统计
+        $("#graph").empty();
+        $("#barGraph").empty();
+        $(".search").hide();
+        $(".listCols").empty();
+        $(".listRows").empty();
+        $(".statistical").show();
+        $(".statistSubmit").click(function(){
+            var values = {};
 
+            var params = $("#statistical").serializeArray();
+            for (var i in params) {
+                values[params[i].name] = params[i].value;
+            }
+            console.log(values);
+            $.ajax({
+                url :  '/users/statisticalScore',
+                type: 'post',
+                dataType: 'json',
+                async: false,
+                data: JSON.stringify(values),
+                contentType: "application/json; charset=utf-8",
+                statusCode:{
+                    200: function(res){
+                        console.log(res);
+                        var myChart1 = echarts.init(document.getElementById('graph'));
+                        var myChart2 = echarts.init(document.getElementById('barGraph'));
+                        var graph = {
+                            title: {
+                                text: '成绩分析',
+                            },
+                            tooltip: {
+                                trigger: 'axis',
+                                axisPointer: {
+                                    type: 'shadow'
+                                }
+                            },
+                            legend: {
+
+                            },
+                            grid: {
+                                left: '3%',
+                                right: '4%',
+                                bottom: '3%',
+                                containLabel: true
+                            },
+                            xAxis: {
+                                type: 'value',
+                                boundaryGap: [0, 0.01]
+                            },
+                            yAxis: {
+                                type: 'category',
+                                data: [ '最低分', '平均分', '最高分', '通过人数']
+                            },
+                            series: [
+                                {
+                                    type: 'bar',
+                                    data: [res.min, res.average, res.max, res.passNumber]
+                                },
+                                {
+                                    type: 'bar',
+                                    data: [,,,300]
+                                }
+                            ]
+                        };
+                        var barGraph = {
+                            color: ['#3398DB'],
+                            tooltip: {
+                                trigger: 'axis',
+                                axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                                    type: 'line'        // 默认为直线，可选为：'line' | 'shadow'
+                                }
+                            },
+                            grid: {
+                                left: '3%',
+                                right: '4%',
+                                bottom: '3%',
+                                containLabel: true
+                            },
+                            xAxis: [
+                                {
+                                    type: 'category',
+                                    data: [ '优秀', '良好', '中等', '不及格'],
+                                    axisTick: {
+                                        alignWithLabel: true
+                                    }
+                                }
+                            ],
+                            yAxis: [
+                                {
+                                    type: 'value'
+                                }
+                            ],
+                            series: [
+                                {
+                                    type: 'bar',
+                                    barWidth: '60%',
+                                    data: [res.score_exce,res.score_fine,res.score_medi,res.score_fail]
+                                }
+                            ]
+                        };
+
+
+                        myChart1.setOption(graph);
+                        myChart2.setOption(barGraph);
+                    }
+                }
+            })
+        })
+    })
 })

@@ -34,7 +34,7 @@ app.get('*',function(req, res, next){
   console.log('session:',userName);
   if(path != '/login'){
       if(!userName){
-          // res.redirect('/login');
+          res.redirect('/login');
       }
   }
   next();

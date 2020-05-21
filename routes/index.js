@@ -19,4 +19,10 @@ router.get('/management', function(req, res, next){
     res.render('management',{userName : userName})
 })
 
+//渲染管理员页面
+router.get('/adminPage', function(req, res, next){
+    var userName = req.session.userName;
+    res.render('adminPage',{userName : userName})
+})
+
 module.exports = router;

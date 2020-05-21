@@ -5,6 +5,7 @@
     <title>学生信息管理系统</title>
     <script type="text/javascript" src="/javascripts/management.js"></script>
     <script type="text/javascript" src="/javascripts/echarts.min.js"></script>
+    <script type="text/javascript" src="/javascripts/adminPage.js"></script>
     <script>
         layui.use('form', function(){
             var form = layui.form;
@@ -20,12 +21,12 @@
 <body class="layui-layout-body">
 <div class="layui-layout layui-layout-admin">
     <div class="layui-header layui-bg-cyan">
-        <div class="layui-logo">客户端管理</div>
+        <div class="layui-logo">管理端</div>
         <!-- 头部区域（可配合layui已有的水平导航） -->
         <ul class="layui-nav layui-layout-right">
             <li class="layui-nav-item">
-                <li class="layui-nav-item"><i class="layui-icon layui-icon-username"></i></li>
-                <li class="layui-nav-item"><a href=""><%= userName %></a></li>
+            <li class="layui-nav-item"><i class="layui-icon layui-icon-username"></i></li>
+            <li class="layui-nav-item"><a href=""><%= userName %></a></li>
             </li>
             <li class="layui-nav-item"><i class="layui-icon layui-icon-logout"></i></li>
             <li class="layui-nav-item logout"><a href="">退出</a></li>
@@ -55,6 +56,12 @@
                     <a href="javascript:;">查询学生信息</a>
                     <dl class="layui-nav-child">
                         <dd class = "searchInfo"><a href="javascript:;">基本信息</a></dd>
+                    </dl>
+                </li>
+                <li class="layui-nav-item ">
+                    <a href="javascript:;">新增学生信息</a>
+                    <dl class="layui-nav-child">
+                        <dd class = "addStudent"><a href="javascript:;">新增学生</a></dd>
                     </dl>
                 </li>
             </ul>
@@ -126,6 +133,31 @@
                 </form>
                 <div id="graph" style="width: 400px;height:200px;"></div>
                 <div id="barGraph" style="width: 600px;height:400px;"></div>
+            </div>
+            <div class="layui-col-md4"></div>
+        </div>
+        <div class="layui-row layui-col-space10 addInfo" >
+            <div class="layui-col-md4"></div>
+            <div class="layui-col-md4">
+                <form class="layui-form" id="search">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">姓名(必填)</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="Sname" placeholder="请输入新增的学生的姓名" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">学号(必填)</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="Sname" placeholder="请输入新增的学生的学号" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <div class="layui-btn addSubmit"  lay-filter="*">添加</div>
+                        </div>
+                    </div>
+                </form>
             </div>
             <div class="layui-col-md4"></div>
         </div>

@@ -128,4 +128,57 @@ router.post('/searchInfo', function(req, res, next) {
     });
 });
 
+//统计成绩接口
+router.post('/statisticalScore', function(req, res, next) {
+    var course = req.body.type;
+    var passMark = req.body.passMark;
+    var statisticalScore = "SELECT Sno,"+course+" as score FROM grade";
+    var data = {};
+    console.log(course);
+    db.query(statisticalScore, function(err, rows, fields){
+            if (err) {
+                console.log(err);
+                return;
+            }
+            var sum = 0;
+            var max = 0;
+            var min = 100;
+            var passNumber = 0;
+            var score_exce = 0;
+            var score_fine = 0;
+            var score_medi = 0;
+            var score_fail = 0;
+            for(var i = 0; i < rows.length; i ++){
+                console.log(max);
+                console.log(min);
+                console.log(rows[i].score);
+                sum += rows[i].score;
+                if(rows[i].score > max)
+                    max = rows[i].score;
+                if(rows[i].score < min)
+                    min = rows[i].score;
+                if(rows[i].score >= passMark)
+                    passNumber ++;
+                if(rows[i].score > 90)
+                    score_exce ++;
+                else if(rows[i].score > 80)
+                    score_fine ++;
+                else if(rows[i].score > 60)
+                    score_medi ++;
+                else
+                    score_fail ++;
+            }
+            data.average = sum / rows.length;
+            data.max = max;
+            data.min = min;
+            data.passNumber = passNumber;
+            data.score_exce = score_exce;
+            data.score_fine = score_fine;
+            data.score_medi = score_medi;
+            data.score_fail = score_fail;
+            res.json(data);
+        });
+
+});
+
 module.exports = router;
