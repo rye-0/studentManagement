@@ -77,7 +77,7 @@ router.get('/getGradeInfo', function(req, res, next) {
             console.log(err);
             return;
         }
-        rows.unshift({COLUMN_NAME: "Sname"});
+        rows.splice(1,0,{COLUMN_NAME: "Sname"});
         data.cols = rows;
         db.query(selRows, function(err, rows, fields){
             if (err) {
@@ -90,6 +90,7 @@ router.get('/getGradeInfo', function(req, res, next) {
         });
     });
 });
+
 //模糊查询信息接口
 router.post('/searchInfo', function(req, res, next) {
     var selCols = 'select COLUMN_NAME from information_schema.COLUMNS where table_name = \'grade\';';
@@ -134,7 +135,6 @@ router.post('/statisticalScore', function(req, res, next) {
     var passMark = req.body.passMark;
     var statisticalScore = "SELECT Sno,"+course+" as score FROM grade";
     var data = {};
-    console.log(course);
     db.query(statisticalScore, function(err, rows, fields){
             if (err) {
                 console.log(err);
@@ -149,9 +149,6 @@ router.post('/statisticalScore', function(req, res, next) {
             var score_medi = 0;
             var score_fail = 0;
             for(var i = 0; i < rows.length; i ++){
-                console.log(max);
-                console.log(min);
-                console.log(rows[i].score);
                 sum += rows[i].score;
                 if(rows[i].score > max)
                     max = rows[i].score;
@@ -177,8 +174,40 @@ router.post('/statisticalScore', function(req, res, next) {
             data.score_medi = score_medi;
             data.score_fail = score_fail;
             res.json(data);
+            console.log(data);
         });
-
 });
+
+//新增学生信息接口
+router.post('/addInfo', function(req, res, next) {
+    var addStudent = "INSERT INTO students (Sno, Sname)\n" +
+        "VALUES ('"+req.body.Sno+"','"+req.body.Sname+"');\n";
+    var addGrade = "INSERT INTO grade (Sno)\n"  +
+        "VALUES ('"+req.body.Sno+"');";
+    var data = {};
+    db.query(addStudent, function(err, rows, fields){
+        if (err) {
+            console.log(err);
+            res.writeHead(300,{
+                "content-type":"text/plain"
+            });
+            res.end();
+            return;
+        }
+        db.query(addGrade, function(err, rows, fields){
+            if (err) {
+                console.log(err);
+                res.writeHead(300,{
+                    "content-type":"text/plain"
+                });
+                res.end();
+                return;
+            }
+            // console.log(rows);
+            res.end();
+        });
+    });
+});
+
 
 module.exports = router;

@@ -22,33 +22,47 @@ var gradeInfoTemplate = function(index, Sno, Sname, Smath, Schinese, Senglish, S
     return template;
 }
 
-$(document).ready(function () {
+function initialize(){
+    $(".addInfo").hide();
+    $("#graph").empty();
+    $("#barGraph").empty();
+    $(".statistical").hide();
+    $(".listCols").empty();
+    $(".listRows").empty();
+    $(".search").hide();
+}
 
+$(document).ready(function () {
+    initialize()
     $(".logout").click(function(){//退出登录
-        if(confirm("确定退出")){
-            $.ajax({
-                url :  '/users/logout',
-                type: 'get',
-                dataType: 'json',
-                async: false,
-                statusCode:{
-                    200: function(data){
-                        alert("成功！！！");
-                        console.log(data.responseText);
-                        setTimeout(function(){
-                            window.location.href = data.responseText
-                        },3000);
-                    },
-                }
-            })
-        }
+        layer.open({
+            title: '提示'
+            , content: "确定要退出？"
+            ,btn:['确定','取消']
+            ,yes:function(){
+                $.ajax({
+                    url :  '/users/logout',
+                    type: 'get',
+                    dataType: 'json',
+                    async: false,
+                    statusCode:{
+                        200: function(data){
+                            layer.open({
+                                title: '提示'
+                                , content: "成功退出！"
+                                ,btn:[]
+                            });
+                            setTimeout(function(){
+                                window.location.href = data.responseText
+                            },1000);
+                        },
+                    }
+                })
+            }
+        });
     })
     $(".basicInfo").click(function(){//获取学生基本信息
-        $("#graph").empty();
-        $("#barGraph").empty();
-        $(".statistical").hide();
-        $(".listCols").empty();
-        $(".listRows").empty();
+        initialize();
         $.ajax({
             url :  '/users/getBasicInfo',
             type: 'get',
@@ -73,11 +87,7 @@ $(document).ready(function () {
         })
     })
     $(".gradeInfo").click(function(){//获取学生成绩
-        $("#graph").empty();
-        $("#barGraph").empty();
-        $(".statistical").hide();
-        $(".listCols").empty();
-        $(".listRows").empty();
+        initialize();
         $.ajax({
             url :  '/users/getGradeInfo',
             type: 'get',
@@ -85,7 +95,7 @@ $(document).ready(function () {
             async: false,
             statusCode:{
                 200: function(data){
-                    // console.log(data);
+                    console.log(data);
                     $(".listCols").empty();
                     $(".listCols").append("<tr class='cols'><th>序号</th></tr>")
                     data.cols.forEach(function(val,index){
@@ -101,15 +111,11 @@ $(document).ready(function () {
             }
         })
     })
-    $(".search").hide();
     $(".searchInfo").click(function(){//模糊查找
-        $("#graph").empty();
-        $("#barGraph").empty();
-        $(".statistical").hide();
-        $(".listCols").empty();
-        $(".listRows").empty();
+        initialize()
         $(".search").show();
         $(".searchSubmit").click(function(){
+            initialize();
             $.ajax({
                 url :  '/users/searchInfo',
                 type: 'post',
@@ -130,24 +136,21 @@ $(document).ready(function () {
                         $(".search").hide();
                     },
                     300: function(){
-                        alert("查不到！");
+                        layer.open({
+                            title: '提示'
+                            , content: "查不到！"
+                        });
                     }
 
                 }
             })
         })
     })
-    $(".statistical").hide();
     $(".statisticalScore").click(function(){//成绩统计
-        $("#graph").empty();
-        $("#barGraph").empty();
-        $(".search").hide();
-        $(".listCols").empty();
-        $(".listRows").empty();
+        initialize();
         $(".statistical").show();
         $(".statistSubmit").click(function(){
             var values = {};
-
             var params = $("#statistical").serializeArray();
             for (var i in params) {
                 values[params[i].name] = params[i].value;
@@ -239,8 +242,6 @@ $(document).ready(function () {
                                 }
                             ]
                         };
-
-
                         myChart1.setOption(graph);
                         myChart2.setOption(barGraph);
                     }
