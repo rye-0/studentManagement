@@ -7,11 +7,12 @@ $(document).ready(function () {
             values[params[i].name] = params[i].value;
         }
         values.password = $.md5(values.password);
+        console.log(values);
         var reqUrl;
         if(values.type == 'customer'){
-            reqUrl = '/users/login';
+            reqUrl = '/users/customLogin';
         }else{
-            alert("待开发！");
+            reqUrl = '/users/adminLogin';
         }
         $.ajax({
             url :  reqUrl,
@@ -22,7 +23,11 @@ $(document).ready(function () {
             contentType: "application/json; charset=utf-8",
             statusCode:{
                 200: function(data){
-                    alert("登录成功！",data.responseText);
+                    layer.open({
+                        title: '提示'
+                        , content: "登录成功!"
+                        , btn: []
+                    });
                     // console.log(data.responseText);
                     setTimeout(function(){
                         window.location.href = data.responseText

@@ -32,10 +32,17 @@ app.use(session({
 app.get('*',function(req, res, next){
   var userName = req.session.userName;
   var path = req.path;
-  console.log('session:',userName);
   if(path != '/login'){
       if(!userName){
           res.redirect('/login');
+      }
+      else{
+          if(path == '/adminPage') {
+              if('admin' != userName.split("-")[0]){
+                  res.redirect('/management');
+              }
+
+          }
       }
   }
   next();

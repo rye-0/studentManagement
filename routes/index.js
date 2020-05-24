@@ -16,13 +16,13 @@ router.get('/login', function(req, res, next){
 //渲染管理页面
 router.get('/management', function(req, res, next){
     var userName = req.session.userName;
-    res.render('management',{userName : userName})
+    res.render('management',{userName : userName.split('-')[1]})
 })
 
 //渲染管理员页面
 router.get('/adminPage', function(req, res, next){
     var userName = req.session.userName;
-    res.render('adminPage',{userName : userName})
+    res.render('adminPage',{userName : userName.split('-')[1]})
 })
 
 module.exports = router;

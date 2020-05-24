@@ -8,9 +8,35 @@ router.get('/', function(req, res, next) {
   res.send('respond with a resource');
 });
 
+//管理员登录接口
+router.post('/adminLogin', function (req, res, next){
+    var sql = 'SELECT * FROM admin WHERE Ano = \''
+        + req.body.userName + '\'';
+    db.query(sql, function(err, rows, fields){
+        if (err) {
+            console.log(err);
+            return;
+        }
+        console.log(rows);
+        if(rows.length > 0){
+            if(rows[0].Apassword == req.body.password){
+                //登录成功，进行session会话存储
+                req.session.userName = "admin-" + req.body.userName;
+                res.send('/adminPage');
+                console.log("success login!");
+                return;
+            }
+        }
+        res.writeHead(300,{
+            "content-type":"text/plain"
+        });
+        res.end();
+        console.log("faild login");
+    });
+})
 
 //客户登录接口
-router.post('/login', function (req, res, next){
+router.post('/customLogin', function (req, res, next){
     var sql = 'SELECT * FROM customers WHERE Uno = \''
         + req.body.userName + '\'';
     db.query(sql, function(err, rows, fields){
@@ -21,7 +47,7 @@ router.post('/login', function (req, res, next){
         if(rows.length > 0){
             if(rows[0].Upassword == req.body.password){
                 //登录成功，进行session会话存储
-                req.session.userName = req.body.userName;
+                req.session.userName = "custom-" + req.body.userName;
                 res.send('/management');
                 console.log("success login!");
                 return;
