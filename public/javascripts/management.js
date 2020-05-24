@@ -10,9 +10,9 @@ var basicInfoTemplate = function(index, Sno, Sname, Ssex, Sclass){
 }
 var gradeInfoTemplate = function(index, Sno, Sname, Smath, Schinese, Senglish, Sphysics,Spolitics){
     var template = `<tr class = "row">
-                    <td>${index}</td>
-                    <td>${Sname}</td>
-                    <td>${Sno}</td>                    
+                    <td>${index}</td>           
+                    <td>${Sno}</td>  
+                    <td>${Sname}</td>                  
                     <td>${Smath}</td>
                     <td>${Schinese}</td>
                     <td>${Senglish}</td>
@@ -70,7 +70,7 @@ $(document).ready(function () {
             async: false,
             statusCode:{
                 200: function(data){
-                    // console.log(data);
+                    console.log(data);
                     $(".listCols").empty();
                     $(".listCols").append("<tr class='cols'><th>序号</th></tr>")
                     data.cols.forEach(function(val,index){
@@ -124,7 +124,7 @@ $(document).ready(function () {
                 data: {key:$("#search input").val()},
                 statusCode:{
                     200: function(data){
-                        // console.log(data);
+                        console.log(data);
                         $(".listCols").append("<tr class='cols'><th>序号</th></tr>")
                         data.cols.forEach(function(val,index){
                             var colName = "<th>"+val.COLUMN_NAME+"</th>";

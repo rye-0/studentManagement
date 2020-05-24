@@ -200,7 +200,7 @@ $(document).ready(function () {
                 values[params[i].name] = params[i].value;
             }
             $.ajax({
-                url :  '/users/addInfo',
+                url :  '/admin/addInfo',
                 type: 'post',
                 dataType: 'json',
                 async: false,
@@ -218,6 +218,45 @@ $(document).ready(function () {
                         layer.open({
                             title: '提示'
                             , content: "出错啦，请仔细核查信息！"
+                        });
+                    }
+
+                }
+            })
+        })
+    })
+
+    $(".searchInfo").click(function(){//模糊查找+修删
+        initialize()
+        $(".search").show();
+        $(".searchSubmit").click(function(){
+            initialize();
+            $.ajax({
+                url :  '/users/searchInfo',
+                type: 'post',
+                dataType: 'json',
+                async: false,
+                data: {key:$("#search input").val()},
+                statusCode:{
+                    200: function(data){
+                        console.log(data);
+                        $(".listCols").append("<tr class='cols'><th>序号</th></tr>")
+                        data.cols.forEach(function(val,index){
+                            var colName = "<th>"+val.COLUMN_NAME+"</th>";
+                            $(".cols").append(colName);
+                        });
+                        $(".cols").append("<th>操作</th>");
+                        data.rows.forEach(function(val,index){
+                            $(".listRows").append(gradeInfoTemplate(index+1, val.Sno, val.Sname, val.Smath, val.Schinese, val.Senglish, val.Sphysics,val.Spolitics));
+                        })
+                        $(".search").hide();
+                        bindDelete(getGradeInfo);
+                        bindModify(getGradeInfo);
+                    },
+                    300: function(){
+                        layer.open({
+                            title: '提示'
+                            , content: "查不到！"
                         });
                     }
 

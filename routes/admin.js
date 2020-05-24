@@ -8,6 +8,37 @@ router.get('/', function(req, res, next) {
     res.send('respond with a resource');
 });
 
+//新增学生信息接口
+router.post('/addInfo', function(req, res, next) {
+    var addStudent = "INSERT INTO students (Sno, Sname, Sclass, Ssex)\n" +
+        "VALUES ('"+req.body.Sno+"','"+req.body.Sname+"','"+req.body.Sclass+"','"+req.body.Ssex+"');\n";
+    var addGrade = "INSERT INTO grade (Sno)\n"  +
+        "VALUES ('"+req.body.Sno+"');";
+    var data = {};
+    db.query(addStudent, function(err, rows, fields){
+        if (err) {
+            console.log(err);
+            res.writeHead(300,{
+                "content-type":"text/plain"
+            });
+            res.end();
+            return;
+        }
+        db.query(addGrade, function(err, rows, fields){
+            if (err) {
+                console.log(err);
+                res.writeHead(300,{
+                    "content-type":"text/plain"
+                });
+                res.end();
+                return;
+            }
+            // console.log(rows);
+            res.end();
+        });
+    });
+});
+
 //删除学生信息接口
 router.post('/deleteInfo', function(req, res, next) {
     console.log(req.body.message);

@@ -122,18 +122,18 @@ router.post('/searchInfo', function(req, res, next) {
     var selCols = 'select COLUMN_NAME from information_schema.COLUMNS where table_name = \'grade\';';
     var searchInfo = "SELECT s.Sname,g.* " +
         " FROM test.students s,test.grade g" +
-        " WHERE  s.Sno = g.Sno and s.Sno =(" +
+        " WHERE  s.Sno = g.Sno and s.Sno IN (" +
         " select Sno" +
-        " FROM test.students" +
-        " WHERE Sname = '" + req.body.key +
-        "');";
+        " FROM students" +
+        " WHERE Sname LIKE '%" + req.body.key +
+        "%');";
     var data = {};
     db.query(selCols, function(err, rows, fields){
         if (err) {
             console.log(err);
             return;
         }
-        rows.unshift({COLUMN_NAME: "Sname"});
+        rows.splice(1,0,{COLUMN_NAME: "Sname"});
         data.cols = rows;
         db.query(searchInfo, function(err, rows, fields){
             if (err) {
@@ -203,37 +203,5 @@ router.post('/statisticalScore', function(req, res, next) {
             console.log(data);
         });
 });
-
-//新增学生信息接口
-router.post('/addInfo', function(req, res, next) {
-    var addStudent = "INSERT INTO students (Sno, Sname)\n" +
-        "VALUES ('"+req.body.Sno+"','"+req.body.Sname+"');\n";
-    var addGrade = "INSERT INTO grade (Sno)\n"  +
-        "VALUES ('"+req.body.Sno+"');";
-    var data = {};
-    db.query(addStudent, function(err, rows, fields){
-        if (err) {
-            console.log(err);
-            res.writeHead(300,{
-                "content-type":"text/plain"
-            });
-            res.end();
-            return;
-        }
-        db.query(addGrade, function(err, rows, fields){
-            if (err) {
-                console.log(err);
-                res.writeHead(300,{
-                    "content-type":"text/plain"
-                });
-                res.end();
-                return;
-            }
-            // console.log(rows);
-            res.end();
-        });
-    });
-});
-
 
 module.exports = router;
