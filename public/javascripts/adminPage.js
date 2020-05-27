@@ -1,3 +1,30 @@
+var registerInfo = "<form class=\"layui-form\" id=\"register\">\n" +
+    "        <div class=\"layui-form-item\">\n" +
+    "            <label class=\"layui-form-label\">用户名</label>\n" +
+    "            <div class=\"layui-input-block\">\n" +
+    "                <input type=\"text\" name=\"userName\" placeholder=\"请输入同户名\" autocomplete=\"off\" class=\"layui-input\">\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "        <div class=\"layui-form-item\">\n" +
+    "            <label class=\"layui-form-label\">密码</label>\n" +
+    "            <div class=\"layui-input-block\">\n" +
+    "                <input type=\"password\" name=\"password\" placeholder=\"请输入密码\" autocomplete=\"off\" class=\"layui-input\">\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "        <div class=\"layui-form-item\">\n" +
+    "            <label class=\"layui-form-label\">确认密码</label>\n" +
+    "            <div class=\"layui-input-block\">\n" +
+    "                <input type=\"password\"  placeholder=\"请重新输入密码\" autocomplete=\"off\" class=\"layui-input\">\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "        <div class=\"layui-form-item\">\n" +
+    "            <label class=\"layui-form-label\">联系方式</label>\n" +
+    "            <div class=\"layui-input-block\">\n" +
+    "                <input type=\"text\" name=\"contactInfo\" placeholder=\"请重新输入手机号\" autocomplete=\"off\" class=\"layui-input\">\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </form>"
+
 var basicInfoTemplate = function(index, Sno, Sname, Ssex, Sclass){
     var template = `<tr class = "row">
                     <td>${index}</td>
@@ -29,6 +56,19 @@ var gradeInfoTemplate = function(index, Sno, Sname, Smath, Schinese, Senglish, S
                 </tr>`;
     return template;
 }
+
+var customersInfoTemplate = function(index, Uno, Ucontact){
+    var template = `<tr class = "row">
+                    <td>${index}</td>      
+                    <td>${Uno}</td>  
+                    <td>${Ucontact}</td>                  
+                    <td>
+                        <button type="button" class="layui-btn layui-btn-primary layui-btn-sm delete"><i class="layui-icon"></i></button>
+                    </td>           
+                </tr>`;
+    return template;
+}
+
 var bindDelete = function (callback){
     $(".delete").click(function(){//删除学生信息
         if(confirm("确定删除该条信息？")) {
@@ -64,11 +104,46 @@ var bindDelete = function (callback){
         }
     })
 }
+var bindCustomDelete = function (callback){
+    $(".delete").click(function(){//删除客户信息
+        if(confirm("确定删除该账号？")) {
+            var resData = {};
+            var res = $(this).parent().parent().children()[1].innerHTML;
+            resData.message = res;
+            console.log(resData);
+            $.ajax({
+                url: '/admin/deleteCustomInfo',
+                type: 'post',
+                dataType: 'json',
+                async: false,
+                data: JSON.stringify(resData),
+                contentType: "application/json; charset=utf-8",
+                statusCode: {
+                    200: function (data) {
+                        console.log(data);
+                        layer.open({
+                            title: '提示'
+                            , content: "删除成功！"
+                        });
+                        callback();
+                    },
+                    300: function () {
+                        layer.open({
+                            title: '提示'
+                            , content: "删除错误，请重试！"
+                        });
+                    }
+
+                }
+            })
+        }
+    })
+}
 
 var bindModify = function (callback) {
     $(".modify").click(function () {
         var lables = [];
-        $(".cols").children('th').each(function (j) {              //待开发
+        $(".cols").children('th').each(function (j) {
                 lables[j] = $(this).text();
         });
         lables.splice(lables.length-1,1);
@@ -132,7 +207,7 @@ var bindModify = function (callback) {
 var getBasicInfo = function () {
     initialize();
     $.ajax({
-        url :  '/users/getBasicInfo',
+        url :  '/manage/getBasicInfo',
         type: 'get',
         dataType: 'json',
         async: false,
@@ -160,7 +235,7 @@ var getBasicInfo = function () {
 var getGradeInfo = function (){
     initialize();
     $.ajax({
-        url :  '/users/getGradeInfo',
+        url :  '/manage/getGradeInfo',
         type: 'get',
         dataType: 'json',
         async: false,
@@ -185,10 +260,37 @@ var getGradeInfo = function (){
         }
     })
 }
+var getCustomInfo = function(){
+    initialize();
+    $.ajax({
+        url :  '/admin/customersInfo',
+        type: 'get',
+        dataType: 'json',
+        async: false,
+        contentType: "application/json; charset=utf-8",
+        statusCode:{
+            200: function(data){
+                // console.log(data);
+                $(".listCols").empty();
+                $(".listCols").append("<tr class='cols'><th>序号</th></tr>")
+                data.cols.forEach(function(val,index){
+                    var colName = "<th>"+val.COLUMN_NAME+"</th>";
+                    $(".cols").append(colName);
+                });
+                $(".cols").append("<th>操作</th>");
+                $(".listRows").empty();
+                data.rows.forEach(function(val,index){
+                    $(".listRows").append(customersInfoTemplate(index+1, val.Uno, val.Ucontact));
+                })
+                bindCustomDelete(getCustomInfo);
+            },
+        }
+    })
+}
 
 $(document).ready(function () {
     initialize();
-    $(".addInfo").hide();
+//学生管理
     $(".addStudent").click(function(){//新增学生
         initialize();
         $(".addInfo").show();
@@ -232,7 +334,7 @@ $(document).ready(function () {
         $(".searchSubmit").click(function(){
             initialize();
             $.ajax({
-                url :  '/users/searchInfo',
+                url :  '/manage/searchInfo',
                 type: 'post',
                 dataType: 'json',
                 async: false,
@@ -268,5 +370,49 @@ $(document).ready(function () {
     $(".basicInfo").click(getBasicInfo);
     //获取学生成绩
     $(".gradeInfo").click(getGradeInfo);
+
+// 客户管理
+    $(".customersInfo").click(getCustomInfo)
+    $(".addCustomer").click(function(){
+        layer.open({
+            title: '注册'
+            , content: registerInfo
+            ,btn:['注册']
+            ,yes: function(){
+                var values = {};
+
+                var params = $("#register").serializeArray();
+                for (var i in params) {
+                    values[params[i].name] = params[i].value;
+                }
+                // console.log(values);
+                $.ajax({
+                    url :  '/users/register',
+                    type: 'post',
+                    dataType: 'json',
+                    async: false,
+                    data: JSON.stringify(values),
+                    contentType: "application/json; charset=utf-8",
+                    statusCode:{
+                        200: function(data){
+                            // console.log(data);
+                            layer.open({
+                                title: '信息'
+                                , content: "成功注册！"
+                            })
+                            getCustomInfo();
+                        },
+                        300: function(){
+                            layer.open({
+                                title: '提示'
+                                , content: "用户已经存在！"
+                            })
+                        }
+
+                    }
+                })
+            }
+        });
+    })
 
 })

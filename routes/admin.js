@@ -124,4 +124,45 @@ router.post('/modifyInfo', function(req, res, next) {
     });
 });
 
+//获取客户信息接口
+router.get('/customersInfo', function(req, res, next) {
+    var selCols = 'select COLUMN_NAME from information_schema.COLUMNS where table_name = \'customers\';';
+    var selRows = 'SELECT Uno,Ucontact FROM customers';
+
+    var data = {};
+    db.query(selCols, function(err, rows, fields){
+        if (err) {
+            console.log(err);
+            return;
+        }
+        rows.splice(1,1);
+        data.cols = rows;
+        db.query(selRows, function(err, rows, fields){
+            if (err) {
+                console.log(err);
+                return;
+            }
+            data.rows = rows;
+            res.json(data);
+        });
+    });
+});
+
+//删除学生信息接口
+router.post('/deleteCustomInfo', function(req, res, next) {
+    console.log(req.body.message);
+    var deleteInfo = "DELETE FROM customers WHERE Uno = '"+ req.body.message +"';";
+    db.query(deleteInfo, function(err, rows, fields){
+        if (err) {
+            console.log(err);
+            res.writeHead(300,{
+                "content-type":"text/plain"
+            });
+            res.end();
+            return;
+        }
+        res.end();
+    });
+});
+
 module.exports = router;

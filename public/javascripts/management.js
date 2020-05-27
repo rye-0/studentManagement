@@ -64,7 +64,7 @@ $(document).ready(function () {
     $(".basicInfo").click(function(){//获取学生基本信息
         initialize();
         $.ajax({
-            url :  '/users/getBasicInfo',
+            url :  '/manage/getBasicInfo',
             type: 'get',
             dataType: 'json',
             async: false,
@@ -89,7 +89,7 @@ $(document).ready(function () {
     $(".gradeInfo").click(function(){//获取学生成绩
         initialize();
         $.ajax({
-            url :  '/users/getGradeInfo',
+            url :  '/manage/getGradeInfo',
             type: 'get',
             dataType: 'json',
             async: false,
@@ -117,7 +117,7 @@ $(document).ready(function () {
         $(".searchSubmit").click(function(){
             initialize();
             $.ajax({
-                url :  '/users/searchInfo',
+                url :  '/manage/searchInfo',
                 type: 'post',
                 dataType: 'json',
                 async: false,
@@ -157,7 +157,7 @@ $(document).ready(function () {
             }
             console.log(values);
             $.ajax({
-                url :  '/users/statisticalScore',
+                url :  '/manage/statisticalScore',
                 type: 'post',
                 dataType: 'json',
                 async: false,
