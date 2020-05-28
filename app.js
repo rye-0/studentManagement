@@ -27,7 +27,7 @@ app.use(session({
     secret: 'keyboard cat',
     resave: false,
     saveUninitialized: true,
-    cookie: { maxAge : 1000*60*5 } //指定登录会话有效时长
+    cookie: { maxAge : 1000*60*20 } //指定登录会话有效时长
 }))
 //登录拦截
 app.get('*',function(req, res, next){

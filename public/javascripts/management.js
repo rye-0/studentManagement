@@ -24,9 +24,12 @@ var gradeInfoTemplate = function(index, Sno, Sname, Smath, Schinese, Senglish, S
 
 function initialize(){
     $(".addInfo").hide();
-    $("#graph").empty();
-    $("#barGraph").empty();
     $(".statistical").hide();
+    $(".statisticalStudent").hide();
+    $("#classGraph").hide();
+    $("#graph").hide();
+    $("#barGraph").hide();
+    $("#pieChart").hide();
     $(".listCols").empty();
     $(".listRows").empty();
     $(".search").hide();
@@ -114,7 +117,7 @@ $(document).ready(function () {
     $(".searchInfo").click(function(){//模糊查找
         initialize()
         $(".search").show();
-        $(".searchSubmit").click(function(){
+        $(".searchSubmit").unbind("click").click(function(){
             initialize();
             $.ajax({
                 url :  '/manage/searchInfo',
@@ -148,14 +151,16 @@ $(document).ready(function () {
     })
     $(".statisticalScore").click(function(){//成绩统计
         initialize();
+        $("#graph").show();
+        $("#barGraph").show();
         $(".statistical").show();
-        $(".statistSubmit").click(function(){
+        $(".statistSubmit").unbind("click").click(function(){
             var values = {};
             var params = $("#statistical").serializeArray();
             for (var i in params) {
                 values[params[i].name] = params[i].value;
             }
-            console.log(values);
+            // console.log(values);
             $.ajax({
                 url :  '/manage/statisticalScore',
                 type: 'post',
@@ -247,6 +252,103 @@ $(document).ready(function () {
                     }
                 }
             })
+        })
+    })
+    $(".statisticalStu").click(function(){
+        initialize();
+        $("#classGraph").show();
+        $("#pieChart").show();
+        $(".statisticalStudent").show();
+        $.ajax({
+            url :  '/manage/statisticalStu',
+            type: 'get',
+            dataType: 'json',
+            async: false,
+            statusCode:{
+                200: function(data){
+                    console.log(data);
+                    var num = [];
+                    var classes = [];
+                    for(var i =0; i < data.classes.length; i++){
+                        num[i]= data.classes[i].num;
+                        classes[i] = data.classes[i].Sclass;
+                    }
+                    console.log(classes);
+                    var myChart3 = echarts.init(document.getElementById('pieChart'));
+                    var myChart4 = echarts.init(document.getElementById('classGraph'));
+                    var pieChart = {
+                        title: {
+                            text: '学生统计',
+                            subtext: '',
+                            left: 'center'
+                        },
+                        tooltip: {
+                        },
+                        legend: {
+                            orient: 'vertical',
+                            left: 'left',
+                            data: ['男生', '女生']
+                        },
+                        series: [
+                            {
+                                name: '人数',
+                                type: 'pie',
+                                radius: '55%',
+                                center: ['50%', '60%'],
+                                data: [
+                                    {value: data.sum - data.man, name: '女生'},
+                                    {value: data.man, name: '男生'},
+                                ],
+                                emphasis: {
+                                    itemStyle: {
+                                        shadowBlur: 10,
+                                        shadowOffsetX: 0,
+                                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                    }
+                                }
+                            }
+                        ]
+                    };
+                    var classChart = {
+                        color: ['#3398DB'],
+                        tooltip: {
+                            trigger: 'axis',
+                            axisPointer: {
+                                type: 'line'
+                            }
+                        },
+                        grid: {
+                            left: '3%',
+                            right: '4%',
+                            bottom: '3%',
+                            containLabel: true
+                        },
+                        xAxis: [
+                            {
+                                type: 'category',
+                                data: classes,
+                                axisTick: {
+                                    alignWithLabel: true
+                                }
+                            }
+                        ],
+                        yAxis: [
+                            {
+                                type: 'value'
+                            }
+                        ],
+                        series: [
+                            {
+                                type: 'bar',
+                                barWidth: '60%',
+                                data: num
+                            }
+                        ]
+                    };
+                    myChart3.setOption(pieChart);
+                    myChart4.setOption(classChart);
+                },
+            }
         })
     })
 })

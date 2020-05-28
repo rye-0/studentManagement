@@ -14,7 +14,7 @@ var registerInfo = "<form class=\"layui-form\" id=\"register\">\n" +
     "        <div class=\"layui-form-item\">\n" +
     "            <label class=\"layui-form-label\">确认密码</label>\n" +
     "            <div class=\"layui-input-block\">\n" +
-    "                <input type=\"password\"  placeholder=\"请重新输入密码\" autocomplete=\"off\" class=\"layui-input\">\n" +
+    "                <input type=\"password\"  placeholder=\"请重新输入密码\" autocomplete=\"off\" class=\"layui-input verify\">\n" +
     "            </div>\n" +
     "        </div>\n" +
     "        <div class=\"layui-form-item\">\n" +
@@ -294,7 +294,7 @@ $(document).ready(function () {
     $(".addStudent").click(function(){//新增学生
         initialize();
         $(".addInfo").show();
-        $(".addSubmit").click(function(){
+        $(".addSubmit").unbind("click").click(function(){
             var values = {};
 
             var params = $("#addInfo").serializeArray();
@@ -385,32 +385,40 @@ $(document).ready(function () {
                 for (var i in params) {
                     values[params[i].name] = params[i].value;
                 }
-                // console.log(values);
-                $.ajax({
-                    url :  '/users/register',
-                    type: 'post',
-                    dataType: 'json',
-                    async: false,
-                    data: JSON.stringify(values),
-                    contentType: "application/json; charset=utf-8",
-                    statusCode:{
-                        200: function(data){
-                            // console.log(data);
-                            layer.open({
-                                title: '信息'
-                                , content: "成功注册！"
-                            })
-                            getCustomInfo();
-                        },
-                        300: function(){
-                            layer.open({
-                                title: '提示'
-                                , content: "用户已经存在！"
-                            })
-                        }
+                if($(".verify").val() === values.password){
+                    values.password = $.md5(values.password);
+                    // console.log(values);
+                    $.ajax({
+                        url :  '/users/register',
+                        type: 'post',
+                        dataType: 'json',
+                        async: false,
+                        data: JSON.stringify(values),
+                        contentType: "application/json; charset=utf-8",
+                        statusCode:{
+                            200: function(data){
+                                // console.log(data);
+                                layer.open({
+                                    title: '信息'
+                                    , content: "成功注册！"
+                                })
+                                getCustomInfo();
+                            },
+                            300: function(){
+                                layer.open({
+                                    title: '提示'
+                                    , content: "用户已经存在！"
+                                })
+                            }
 
-                    }
-                })
+                        }
+                    })
+                }else{
+                    layer.open({
+                        title: '提示'
+                        , content: "两次输入的密码不一致！"
+                    })
+                }
             }
         });
     })

@@ -62,8 +62,8 @@ router.post('/customLogin', function (req, res, next){
             console.log(err);
             return;
         }
-        if(rows.length > 0){
-            if(rows[0].Upassword == req.body.password){
+        if(rows.length > 0 && rows[0].Uno === req.body.userName){
+            if(rows[0].Upassword === req.body.password){
                 //登录成功，进行session会话存储
                 req.session.userName = "custom-" + req.body.userName;
                 res.send('/management');

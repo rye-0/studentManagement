@@ -140,4 +140,37 @@ router.post('/statisticalScore', function(req, res, next) {
     });
 });
 
+//统计学生接口
+router.get('/statisticalStu', function(req, res, next) {
+    var statisticalSex = "SELECT * FROM students;";
+    var statisticalClass = "SELECT Sclass,count(*) AS num\n" +
+        "FROM students\n" +
+        "GROUP BY Sclass ;\n";
+    var data = {};
+    db.query(statisticalSex, function(err, sex, fields){
+        if (err) {
+            console.log(err);
+            return;
+        }
+        var man = 0;
+        for(var i = 0; i < sex.length; i ++){
+            if(sex[i].Ssex === '男')
+                man ++;
+        }
+        data.sum = sex.length;
+        data.man = man;
+
+        db.query(statisticalClass, function(err, classes, fields){
+            if (err) {
+                console.log(err);
+                return;
+            }
+            data.classes = classes;
+            res.json(data);
+            console.log(data);
+        });
+    });
+
+});
+
 module.exports = router;
